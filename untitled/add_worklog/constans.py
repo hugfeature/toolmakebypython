@@ -1,0 +1,2 @@
+URL = 'https://pmp.sail-cloud.com/prod-api/'
+AUTH = 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjM0MjcyY2NjLTdmZGYtNDRmYi05ZmYwLWMyOTVjNzY1YWZiOSJ9.Vc7o_c0dYcAA5p0v8LOk3uwsX6jcvAX7xUf38RmhazQ4PanZEhZsdMYlzLtj-IcFZ7JCDGghXnybaNEqPE5mLw'
