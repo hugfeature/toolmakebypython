@@ -63,8 +63,8 @@ def main():
         search_bing(driver, keyword)
         search_count += 1
         logger.info(f"完成搜索 {search_count} 次,搜索的关键字：{keyword}")
-        # 每4次搜索，暂停15分钟
-        if search_count % 4 == 0:
+        # 每3次搜索，暂停15分钟  搜索过快会不增加积分，根据实际调整
+        if search_count % 3 == 0:
             driver.quit()  # 先暂时退出
             logging.info(f"已搜索{search_count}次，暂停{time_sleep}分钟...")
             if search_count != search_num:
