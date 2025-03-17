@@ -41,6 +41,7 @@ def start_driver():
 
 # 在 Bing 中搜索
 def search_bing(driver, keyword):
+    time.sleep(10)
     search_box = driver.find_element(By.ID,'com.android.chrome:id/url_bar')  # 查找搜索框
     search_box.click()  # 点击搜索框
     search_box.send_keys(keyword)  # 输入关键词
@@ -57,7 +58,7 @@ def main():
     driver = start_driver()
     search_count = 0  # 初始化计数器
     search_num = 24 # 需要搜索的次数
-    time_sleep = 20 # 暂停时间
+    time_sleep = 15 # 暂停时间
     while search_count < search_num:
         keyword = common_model.generate_hot_keyword()  # 随机选一个热搜词
         search_bing(driver, keyword)
@@ -70,6 +71,7 @@ def main():
             if search_count != search_num:
                 time.sleep(time_sleep * 60)  # 暂停时间，*60为分钟
                 driver = start_driver()
+                logging.info("启动appiumdriver")
 
     logger.info(f"已完成{search_num}次搜索，退出程序")
     # driver.quit() # 退出

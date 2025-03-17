@@ -37,9 +37,13 @@ def setup_browser():
 
 # 执行bing搜素任务
 def perform_bing_search(driver, keyword):
-    driver.get("https://cn.bing.com")
+    # 搜索页面打开空白
+    driver.get("http://cn.bing.com")
+    time.sleep(10)
     # 在必应搜索框中输入关键词并提交搜索
     search_field = driver.find_element(By.NAME, "q")
+    # driver.get("https://rewards.bing.com/")
+    # search_field = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/main/div/ui-view/mee-rewards-dashboard/main/div/mee-rewards-suggested-searches/div/div/div/input")
     search_field.clear()
     search_field.send_keys(keyword)
     search_field.send_keys(Keys.RETURN)
@@ -54,7 +58,7 @@ def main():
     # 启动浏览器
     driver = setup_browser()
     # satart_reward = get_today_reward(driver)
-    common_model.get_today_reward(driver)
+    # common_model.get_today_reward(driver)
     search_count = 0  # 初始化计数器
     search_num = 36 # 需要搜索的次数
     sleep_time = 15 # 暂停时间，持续搜索会不计分
@@ -67,8 +71,6 @@ def main():
             perform_bing_search(driver, hot_keyword)
             logger.info(f"完成搜索 {search_count} 次，搜索词：'{hot_keyword}'")
                              
-            
-            
             # 每4次搜索后暂停半小时
             if search_count % 4 == 0:
                 logger.info(f"----------已搜索{search_count}次，暂停{sleep_time}分钟...----------")
