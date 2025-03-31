@@ -30,37 +30,44 @@ def start_driver():
     # options.platform_version = '9'
     # options.device_name = 'emulator-5554'
     # mumu 模拟器
+    # options.platform_name = 'Android'
+    # options.platform_version = '12'
+    # options.device_name = '127.0.0.1:16384' 
+    # google 模拟器
     options.platform_name = 'Android'
-    options.platform_version = '12'
-    options.device_name = '127.0.0.1:16384' 
+    options.platform_version = '16'
+    options.device_name = 'emulator-5554' 
     # bing
     # options.app_package = 'com.microsoft.bing'
     # options.app_activity = 'com.microsoft.sapphire.app.main.SapphireMainActivity'
     # options.app_activity ="com.microsoft.sapphire.app.search.autosuggest.activity.AutoSuggestNativeActivity"
     # chrome
-    # options.app_package = 'com.android.chrome'
-    # options.app_activity = 'org.chromium.chrome.browser.ChromeTabbedActivity'
+    options.app_package = 'com.android.chrome'
+    options.app_activity = 'com.google.android.apps.chrome.Main'
     # edge浏览器
-    options.app_package = ''
-    options.app_activity = ''
+    # options.app_package = ''
+    # options.app_activity = ''
     options.no_reset = True
     driver = webdriver.webdriver.WebDriver('http://localhost:4723', options=options)
     return driver
 
 # 在 Bing 中搜索
 def search_bing(driver, keyword):
+    # 等待浏览打开
     time.sleep(20)
-    # driver.find_element(By.ID ,'com.microsoft.bing:id/iab_header_address_bar_container').click()
-    # time.sleep(3)
-    # search_box = driver.find_element(By.ID,'com.android.chrome:id/url_bar')  # 查找搜索框
-    # search_box = driver.find_element(By.ID,'com.microsoft.bing:id/input')
-    search_box = driver.find_element(By.ID,'sb_form_q')
+    # edge浏览器
+    # search_box = driver.find_element(By.ID,'sb_form_q')
+    # Chrome浏览器 
+    # 使用的是网页头部的搜索框
+    search_box = driver.find_element(By.ID,'com.android.chrome:id/url_bar')
     search_box.click()  # 点击搜索框
+    time.sleep(3)
     search_box.send_keys(keyword)  # 输入关键词
-    time.sleep(10)
-    # search_button = driver.find_element(By.ID,'com.android.chrome:id/line_1') # 关联的第一个搜索
+    time.sleep(5)
+    # Chrome浏览器
+    search_button = driver.find_element(By.ID,'com.android.chrome:id/line_1') # 关联的第一个搜索
     # search_button = driver.find_element(By.XPATH,'//androidx.recyclerview.widget.RecyclerView[@resource-id="com.microsoft.bing:id/sapphire_search_list"]/android.view.ViewGroup')
-    search_button = driver.find_element(By.ID, 'sb_form')
+    # search_button = driver.find_element(By.ID, 'sb_form')
     search_button.click()  # 提交搜索
     time.sleep(random.randint(4, 20)) # 模拟人类行为，等待随机时间
 
