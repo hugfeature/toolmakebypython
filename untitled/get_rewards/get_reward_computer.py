@@ -76,13 +76,15 @@ def main():
                 logger.info(f"----------已搜索{search_count}次，暂停{sleep_time}分钟...----------")
                 if search_count != search_num:
                     time.sleep(sleep_time * 60)  # 暂停时间，*60为分钟
-                                    
+    except Exception as e:
+         logger.error(f"发生异常: {e}", exc_info=True)         
     finally:
         # end_reward = get_today_reward(driver)
         # get_reward = int(end_reward) - int(satart_reward)
         # logging.info(f'今日电脑搜索获得{get_reward}')
         # 关闭浏览器
-        driver.quit()
+        if driver:
+            driver.quit() 
         logger.info("所有搜索任务完成。")
 
 # 运行主程序
