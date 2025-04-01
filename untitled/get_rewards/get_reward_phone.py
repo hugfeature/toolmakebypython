@@ -95,10 +95,14 @@ def main():
                     time.sleep(time_sleep * 60)  # 暂停时间，*60为分钟
                     driver = start_driver()
                     logging.info("启动appiumdriver")
+    except Exception as e:
+        logger.error(f"发生异常: {e}", exc_info=True)
     finally:
-            logger.info(f"已完成{search_num}次搜索，退出程序")
-            # driver.quit() # 退出
-            appium_service.stop()  # 停止 Appium 服务
+            if driver:
+                driver.quit() # driver退出
+            if appium_service:
+                appium_service.stop()# 停止 Appium 服务
+            logger.info(f"所有搜索任务完成，退出程序")
 
 if __name__ == "__main__":
     main()
