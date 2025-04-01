@@ -102,7 +102,7 @@ def main():
                 driver.quit() # driver退出
             if appium_service:
                 appium_service.stop()# 停止 Appium 服务
-            logger.info(f"所有搜索任务完成，退出程序")
+            logger.info("所有搜索任务完成，退出程序")
 
 if __name__ == "__main__":
     main()
