@@ -98,8 +98,8 @@ def main():
     except Exception as e:
         logger.error(f"发生异常: {e}", exc_info=True)
     finally:
-            if driver:
-                driver.quit() # driver退出
+            # if driver:
+            #     driver.quit() # driver退出
             if appium_service:
                 appium_service.stop()# 停止 Appium 服务
             logger.info("所有搜索任务完成，退出程序")
