@@ -42,12 +42,9 @@ def perform_bing_search(driver, keyword):
     time.sleep(10)
     # 在必应搜索框中输入关键词并提交搜索
     search_field = driver.find_element(By.NAME, "q")
-    # driver.get("https://rewards.bing.com/")
-    # search_field = driver.find_element(By.XPATH, "/html/body/div[1]/div[2]/main/div/ui-view/mee-rewards-dashboard/main/div/mee-rewards-suggested-searches/div/div/div/input")
     search_field.clear()
     search_field.send_keys(keyword)
     search_field.send_keys(Keys.RETURN)
-
     # 等待搜索结果加载
     time.sleep(random.randint(4, 20))  # 模拟人类行为，等待随机的时间间隔
 
@@ -57,8 +54,6 @@ def perform_bing_search(driver, keyword):
 def main():
     # 启动浏览器
     driver = setup_browser()
-    # satart_reward = get_today_reward(driver)
-    # common_model.get_today_reward(driver)
     search_count = 0  # 初始化计数器
     search_num = 36 # 需要搜索的次数
     sleep_time = 15 # 暂停时间，持续搜索会不计分
@@ -79,9 +74,6 @@ def main():
     except Exception as e:
          logger.error(f"发生异常: {e}", exc_info=True)         
     finally:
-        # end_reward = get_today_reward(driver)
-        # get_reward = int(end_reward) - int(satart_reward)
-        # logging.info(f'今日电脑搜索获得{get_reward}')
         # 关闭浏览器
         if driver:
             driver.quit() 
