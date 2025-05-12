@@ -52,7 +52,9 @@ def get_previous_workday(date=None):
 
     return previous_workday.strftime("%Y%m%d")
 
+
 if __name__ == "__main__":
     END_DATE = get_previous_workday()
     print(END_DATE)
     print (type(END_DATE))
+    # get_stock_list()

@@ -101,7 +101,7 @@ def search_bing(driver, keyword):
 # ---------------------- 主程序逻辑 ----------------------
 def main():
     search_count = 0
-    search_num = 24
+    search_num = 260
     driver = None
     
     try:
@@ -116,7 +116,7 @@ def main():
                 search_count += 1
                 
                 # 随机等待（更自然的行为模式）
-                sleep_time = random.randint(8, 25)
+                sleep_time = random.randint(10, 35)
                 logger.info(f"等待 {sleep_time} 秒后继续...")
                 time.sleep(sleep_time)
                 # 每4次搜索后暂停半小时

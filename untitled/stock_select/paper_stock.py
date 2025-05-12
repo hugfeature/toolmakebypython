@@ -5,6 +5,7 @@ import time
 import traceback
 from tqdm import tqdm
 from datetime import datetime, timedelta
+import re  # 新增导入re模块处理文件名
 
 # 设置数据存储目录
 DATA_DIR = "data"
@@ -47,16 +48,12 @@ TAKE_PROFIT = 1.10  # 止盈：涨 10% 卖出
 def get_stock_list():
     try:
         df = ak.stock_info_a_code_name()
-
         # 筛除 ST、*ST、退市股票
-        exclude_keywords = ["ST","退市"]
+        exclude_keywords = ["ST", "退市"]
         pattern = "|".join(exclude_keywords)
-        # print(f'过滤前：{df}' )
-        df = df[~df["name"].str.contains(pattern,regex=True,case=False, na=False)]
-
-        # 只保留 6 位数字代码的主板类股票
-        # df = df[df['code'].str.match(r'^\d{6}$')]
-
+        df = df[~df["name"].str.contains(pattern, regex=True, case=False, na=False)]
+        # 过滤创业板（3开头）和科创板（688开头）
+        df = df[~df['code'].str.startswith(('3', '688'))]
         print(f"✅ 成功获取非 ST/退市 股票数量: {len(df)}")
         return df.reset_index(drop=True)
     except Exception as e:
@@ -103,14 +100,14 @@ def stock_selection():
         last_row = df.iloc[-1]
         prev_row = df.iloc[-2]
 
-        # 选股条件：均线金叉 + 量能放大
+        # 选股条件：均线金叉 + 量能放大（保持不变）
         if (prev_row['5日均线'] <= prev_row['10日均线']) and (last_row['5日均线'] > last_row['10日均线']):
             if last_row['收盘'] > last_row['10日均线']:
                 if last_row['成交量'] > prev_row['成交量'] * 1.1:
                     selected_stocks.append((stock_code, stock_name))
-                    
-                    # 保存 K 线数据
-                    file_name = os.path.join(DATA_DIR, f"{stock_code}_{stock_name}_k线.csv")
+                    # 处理非法字符
+                    safe_name = re.sub(r'[\\/*?:"<>| ]', '_', stock_name)
+                    file_name = os.path.join(DATA_DIR, f"{stock_code}_{safe_name}_k线.csv")
                     df.to_csv(file_name, index=False, encoding="utf-8-sig")
                     print(f"✅ 选中股票：{stock_code}（{stock_name}），K线数据已保存 {file_name}")
 
@@ -119,25 +116,30 @@ def stock_selection():
 # 回测策略
 def backtest(stock_code):
     df = get_stock_data(stock_code)
-
     if df is None or len(df) < 20:
         print(f"⚠️ {stock_code} 数据不足，跳过回测")
         return None
 
-    buy_price = df.iloc[0]['收盘']  # 以第一天收盘价买入
-    for i in range(1, len(df)):
-        high_price = df.iloc[i]['最高']
-        low_price = df.iloc[i]['最低']
+    # 买入价为选股当天的收盘价（最后一行）
+    buy_price = df.iloc[-1]['收盘']
+    # 假设之后没有数据，这里仅作演示，实际应获取后续数据
+    # 注意：由于数据截止到选股日期，此处无法正确回测，需重新设计数据获取
+    # 以下仅为示例逻辑，可能需要调整
+    for i in range(len(df)):
+        current_row = df.iloc[i]
+        # 检查是否在买入之后
+        if i < len(df) - 1:
+            continue  # 假设买入发生在最后一天，之前的日期忽略
+        high_price = current_row['最高']
+        low_price = current_row['最低']
 
-        # 止盈止损策略
         if low_price <= buy_price * STOP_LOSS:
-            return STOP_LOSS - 1  # 亏 5%
+            return STOP_LOSS - 1
         if high_price >= buy_price * TAKE_PROFIT:
-            return TAKE_PROFIT - 1  # 赚 10%
+            return TAKE_PROFIT - 1
 
-    # 没触发止盈止损，持有到最后一天
-    final_price = df.iloc[-1]['收盘']
-    return (final_price / buy_price) - 1  # 计算最终收益率
+    # 持有到最后一天（即买入当天，收益为0）
+    return 0
 
 # 回测全部选股
 def backtest_all(selected_stocks):
@@ -151,21 +153,18 @@ def backtest_all(selected_stocks):
                 "收益率(%)": round(profit * 100, 2)
             })
 
-    # 转换为 DataFrame 并排序
     df_result = pd.DataFrame(results)
     df_result.sort_values(by="收益率(%)", ascending=False, inplace=True)
 
-    # 获取沪深 300 指数收益率作为基准
-    hs300 = get_stock_data("sh000300")  # 沪深300
-    if hs300 is not None:
+    # 获取沪深300指数数据，修正代码为000300
+    hs300 = get_stock_data("000300")  # 修改代码
+    if hs300 is not None and not hs300.empty:
         hs300_profit = (hs300.iloc[-1]['收盘'] / hs300.iloc[0]['收盘']) - 1
         hs300_profit = round(hs300_profit * 100, 2)
         print(f"\n📈 沪深 300 指数收益率: {hs300_profit}%")
 
     print("\n📊 回测结果（已按收益率排序）：")
     print(df_result.to_string(index=False))
-
-    # 保存到 CSV
     df_result.to_csv("回测收益排名.csv", index=False, encoding="utf-8-sig")
     print("\n📁 回测结果已保存为回测收益排名.csv")
 

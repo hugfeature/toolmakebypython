@@ -45,8 +45,11 @@ def perform_bing_search(driver, keyword):
     search_field.clear()
     search_field.send_keys(keyword)
     search_field.send_keys(Keys.RETURN)
-    # 等待搜索结果加载
-    time.sleep(random.randint(4, 20))  # 模拟人类行为，等待随机的时间间隔
+    # 等待搜索结果加载，模拟人类行为，等待随机的时间间隔
+    sleep_time = random.randint(10, 30)
+    logger.info(f"等待 {sleep_time} 秒后继续...")
+    time.sleep(sleep_time)
+ 
 
 
 
@@ -55,8 +58,8 @@ def main():
     # 启动浏览器
     driver = setup_browser()
     search_count = 0  # 初始化计数器
-    search_num = 36 # 需要搜索的次数
-    sleep_time = 15 # 暂停时间，持续搜索会不计分
+    search_num = 370 # 需要搜索的次数
+    # sleep_time = 15 # 暂停时间，持续搜索会不计分
     try:
         # 获取每日热搜并进行搜索
         while search_count < search_num:  
@@ -67,10 +70,10 @@ def main():
             logger.info(f"完成搜索 {search_count} 次，搜索词：'{hot_keyword}'")
                              
             # 每4次搜索后暂停半小时
-            if search_count % 4 == 0:
-                logger.info(f"----------已搜索{search_count}次，暂停{sleep_time}分钟...----------")
-                if search_count != search_num:
-                    time.sleep(sleep_time * 60)  # 暂停时间，*60为分钟
+            # if search_count % 4 == 0:
+            #     logger.info(f"----------已搜索{search_count}次，暂停{sleep_time}分钟...----------")
+            #     if search_count != search_num:
+            #         time.sleep(sleep_time * 60)  # 暂停时间，*60为分钟
     except Exception as e:
          logger.error(f"发生异常: {e}", exc_info=True)         
     finally:
