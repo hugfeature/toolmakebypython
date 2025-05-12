@@ -6,8 +6,6 @@ from selenium.webdriver.edge.service import Service
 from selenium.webdriver.edge.options import Options
 from selenium.webdriver.common.keys import Keys
 import common_model
-import requests
-from bs4 import BeautifulSoup
 import time
 import random
 
@@ -30,9 +28,27 @@ def setup_browser():
     edge_options.add_experimental_option('excludeSwitches', ['enable-automation'])
     # 忽略 DevTools listening on ws://127.0.0.1... 提示
     edge_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+    # 添加反自动化规避参数
+    edge_options.add_argument("--disable-blink-features=AutomationControlled")
+    edge_options.add_experimental_option("useAutomationExtension", False)
+        # 随机用户代理
+    user_agents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0",
+        # 添加更多常见UA
+    ]
+    edge_options.add_argument(f"user-agent={random.choice(user_agents)}")
+    
     # 启动 Edge 浏览器
     service = Service(edge_driver_path)
+  # 禁用自动化控制特征
     driver = webdriver.Edge(service=service, options=edge_options)
+    driver.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+        "source": """
+        Object.defineProperty(navigator, 'webdriver', {
+            get: () => undefined
+        })
+        """
+    })
     return driver
 
 # 执行bing搜素任务
