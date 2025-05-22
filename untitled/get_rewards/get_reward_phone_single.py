@@ -83,11 +83,11 @@ def search_bing(driver, keyword):
             EC.element_to_be_clickable((By.ID, 'com.android.chrome:id/line_1')))
         search_suggestion.click()
         
-        # 验证搜索结果（根据页面特征调整）
-        wait.until(
-            EC.presence_of_element_located((By.XPATH, '//android.webkit.WebView'))
-        )
-        logger.debug("搜索结果页加载完成")
+        # 验证搜索结果（根据页面特征调整） 因设备网络问题，移除此段信息
+        # wait.until(
+        #     EC.presence_of_element_located((By.XPATH, '//android.webkit.WebView'))
+        # )
+        # logger.debug("搜索结果页加载完成")
         
         # 随机滚动模拟浏览
         # for _ in range(random.randint(1, 3)):

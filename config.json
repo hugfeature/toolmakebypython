@@ -1,0 +1,12 @@
+{
+  "hold_days": 5,
+  "take_profit_rate": 1.10,
+  "stop_loss_rate": 0.95,
+  "log_path": "log/stock_selection_log.csv",
+  "kline_save_dir": "data",
+  "exclude_keywords": ["ST", "退市"],
+  "exclude_code_prefixes": ["3", "688"],
+  "benchmark_index": "000300",
+  "save_kline": true,
+  "generate_log": true
+}
